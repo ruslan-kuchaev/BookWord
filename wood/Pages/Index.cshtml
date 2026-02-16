@@ -1,0 +1,130 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Мир слов - главная";
+}
+
+@* <section class="hero-section mb-5"> *@
+@*     <div class="container-fluid p-0"> *@
+@*         <div class="position-relative"> *@
+@*             <img src="img/sunset-lake-mountains.jpeg" class="w-100" style="height: 300px; object-fit: cover; filter:  brightness(0.6) blur(1px)" alt="Баннер Читай город"> *@
+@*             <div class="position-absolute top-50 start-50 translate-middle text-center text-white w-75"> *@
+@*                 <h1 class="display-4 fw-bold mb-4" style="backdrop-filter: blur(0.5)">МИР СЛОВ</h1> *@
+@*                 <h2 class="h3 fw-bold mb-4">Соседи заодно</h2> *@
+@*                 <p class="lead fw-bold mb-4">Героям нужно объединиться, чтобы выжить в шестом томе «Милого дома». Новинка + набор мерча – только у нас в предзаказе</p> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </section> *@
+
+
+<section class="container mb-5">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm h-100 hover-card">
+                        <div class="card-body p-4">
+                            <span class="badge bg-danger mb-3">Новинка</span>
+                            <h3 class="h4 fw-bold mb-3">«Обман» Лии Арден</h3>
+                            <p class="text-muted mb-4">И другие главные новинки февраля</p>
+                            <a href="#" class="text-decoration-none fw-bold">Смотреть все →</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm h-100 hover-card">
+                        <div class="card-body p-4">
+                            <span class="badge bg-success mb-3">Подарки</span>
+                            <h3 class="h4 fw-bold mb-3">Гид по подаркам</h3>
+                            <p class="text-muted mb-4">Останется только упаковать</p>
+                            <a href="#" class="text-decoration-none fw-bold">Выбрать подарок →</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm bg-light hover-card">
+                        <div class="card-body p-4">
+                            <span class="badge bg-warning mb-3">Игры</span>
+                            <h3 class="h4 fw-bold mb-3">Настольный клуб</h3>
+                            <p class="text-muted mb-0">От «Имаджинариума» до «Мафии» — более 100 настольных игр в наличии</p>
+                            <a href="#" class="text-decoration-none fw-bold mt-3 d-block">Перейти в клуб →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100 bg-primary text-white">
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <h4 class="h5 fw-bold mb-3">Клуб читателей</h4>
+                        <p class="mb-4">Получите дополнительную скидку 10% на все новинки</p>
+                    </div>
+                    <div class="my-3 text-center">
+                        <img src="img/Group 1.png" 
+                             class="img-fluid" 
+                             style="max-width: 100%; height: auto; max-height: 250px; object-fit: contain;" 
+                             alt="Клуб читателей">
+                    </div>
+                    <a href="#" class="btn btn-outline-light rounded-pill">Подписаться</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container mb-4">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
+        <h2 class="h3 fw-bold mb-0">НОВИНКИ ЛИТЕРАТУРЫ</h2>
+    </div>
+</section>
+@* // горизонт скролл  *@
+<section class="container mb-5">
+    <div class="row g-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+                <div class="position-relative">
+                    <span class="position-absolute top-0 start-0 badge bg-danger m-2">Новинка</span>
+                    <img src="img/tets_book.webp" class="card-img-top" alt="Обложка книги">
+                </div>
+                <div class="card-body">
+                    <span class="badge bg-secondary mb-2">Твердая обложка</span>
+                    <h5 class="card-title h6 fw-bold mb-2">Роксошь ФРИВОЛИТЕ</h5>
+                    <p class="card-text small text-muted mb-3">Искусство электроники авторских училищ</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted text-decoration-line-through small">2 241 ₽</span>
+                            <span class="h5 fw-bold text-danger ms-2">1 899 ₽</span>
+                        </div>
+                        <span class="badge bg-success">-15%</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 pb-3">
+                    <button class="btn btn-outline-primary w-100 rounded-pill">
+                        <i class="fas fa-shopping-cart me-2"></i>В корзину
+                    </button>
+                </div>
+            </div>
+        </div>
+        </div>
+</section>
+
+<style>
+    .hover-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+    .hero-section .btn-primary {
+        background-color: #8B5A2B;
+        border-color: #8B5A2B;
+    }
+    .hero-section .btn-primary:hover {
+        background-color: #6B3F1F;
+        border-color: #6B3F1F;
+    }
+</style>
