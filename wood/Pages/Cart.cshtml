@@ -1,0 +1,180 @@
+@page
+@model CartModel
+@{
+    ViewData["Title"] = "Корзина";
+}
+
+<div class="container">
+    <h2 class="h3 fw-bold mb-4">Корзина</h2>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div id="cartItems">
+                <div class="text-center py-5">
+                    <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                    <h4>Корзина пуста</h4>
+                    <p class="text-muted">Добавьте книги из каталога</p>
+                    <a asp-page="/Index" class="btn btn-primary mt-3">Перейти к покупкам</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold mb-4">Итого</h5>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Товаров:</span>
+                        <span id="totalItems">0</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Сумма:</span>
+                        <span id="totalPrice" class="fw-bold">0 ₽</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="h5 fw-bold">К оплате:</span>
+                        <span id="finalPrice" class="h5 fw-bold text-primary">0 ₽</span>
+                    </div>
+                    
+                    <button id="checkoutBtn" class="btn btn-primary w-100 btn-lg rounded-pill" disabled>
+                        Оформить заказ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .cart-item {
+        transition: all 0.3s;
+    }
+    
+    .cart-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .quantity-btn {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    function renderCart() {
+        const cartItemsContainer = document.getElementById('cartItems');
+        
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                    <h4>Корзина пуста</h4>
+                    <p class="text-muted">Добавьте книги из каталога</p>
+                    <a href="/" class="btn btn-primary mt-3">Перейти к покупкам</a>
+                </div>
+            `;
+            document.getElementById('checkoutBtn').disabled = true;
+            updateTotals();
+            return;
+        }
+        
+        let html = '';
+        cart.forEach(item => {
+            const itemTotal = item.price * item.quantity;
+            html += `
+                <div class="card mb-3 border-0 shadow-sm cart-item">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h5 class="card-title mb-1">${item.title}</h5>
+                                <p class="text-muted mb-0">${item.price} ₽</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <button class="btn btn-outline-secondary quantity-btn" onclick="updateQuantity(${item.id}, -1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="mx-3 fw-bold">${item.quantity}</span>
+                                    <button class="btn btn-outline-secondary quantity-btn" onclick="updateQuantity(${item.id}, 1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <span class="fw-bold text-primary">${itemTotal} ₽</span>
+                            </div>
+                            <div class="col-md-1 text-end">
+                                <button class="btn btn-link text-danger" onclick="removeFromCart(${item.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        cartItemsContainer.innerHTML = html;
+        document.getElementById('checkoutBtn').disabled = false;
+        updateTotals();
+    }
+    
+    function updateQuantity(bookId, change) {
+        const item = cart.find(i => i.id === bookId);
+        if (item) {
+            item.quantity += change;
+            if (item.quantity <= 0) {
+                removeFromCart(bookId);
+                return;
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            window.cart = cart;
+            renderCart();
+            if (typeof updateCartCount === 'function') {
+                updateCartCount();
+            }
+        }
+    }
+    
+    function removeFromCart(bookId) {
+        cart = cart.filter(item => item.id !== bookId);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        window.cart = cart;
+        renderCart();
+        if (typeof updateCartCount === 'function') {
+            updateCartCount();
+        }
+    }
+    
+    function updateTotals() {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        
+        document.getElementById('totalItems').textContent = totalItems;
+        document.getElementById('totalPrice').textContent = `${totalPrice} ₽`;
+        document.getElementById('finalPrice').textContent = `${totalPrice} ₽`;
+    }
+    
+    document.getElementById('checkoutBtn').addEventListener('click', function() {
+        if (cart.length === 0) return;
+        
+        alert('Функция оформления заказа будет реализована позже!');
+
+    });
+    
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderCart();
+    });
+</script>

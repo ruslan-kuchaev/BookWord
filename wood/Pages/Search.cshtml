@@ -1,0 +1,194 @@
+@page
+@model SearchModel
+@{
+    ViewData["Title"] = $"Поиск: {Model.Query}";
+}
+
+<div class="container">
+    <div class="mb-4">
+        <h2 class="h3 fw-bold">Результаты поиска: "@Model.Query"</h2>
+        <p class="text-muted">Найдено книг: @Model.SearchResults.Count</p>
+    </div>
+
+    @if (!Model.SearchResults.Any())
+    {
+        <div class="alert alert-info text-center py-5">
+            <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+            <h4>Ничего не найдено</h4>
+            <p class="mb-0">Попробуйте изменить поисковый запрос</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var book in Model.SearchResults)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card h-100 border-0 shadow-sm hover-card">
+                        <div class="position-relative">
+                            @if (book.IsNew)
+                            {
+                                <span class="position-absolute top-0 start-0 badge bg-danger m-2">Новинка</span>
+                            }
+                            @if (book.IsBestseller)
+                            {
+                                <span class="position-absolute top-0 start-0 badge bg-warning text-dark m-2">Бестселлер</span>
+                            }
+                            <button class="btn btn-link position-absolute top-0 end-0 m-2 p-0 favorite-btn" 
+                                    onclick="toggleFavorite(@book.Id, this)" 
+                                    style="z-index: 10; background: white; border-radius: 50%; width: 40px; height: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                <i class="far fa-heart text-danger" style="font-size: 1.2rem;"></i>
+                            </button>
+                            <img src="@book.ImageUrl" class="card-img-top" alt="@book.Title" style="height: 350px; object-fit: cover;">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title h6 fw-bold mb-2">@book.Title</h5>
+                            <p class="card-text small text-muted mb-3">@book.Author</p>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    @if (book.OldPrice.HasValue)
+                                    {
+                                        <span class="text-muted text-decoration-line-through small">@book.OldPrice ₽</span>
+                                        <br>
+                                    }
+                                    <span class="h5 fw-bold text-danger mb-0">@book.Price ₽</span>
+                                </div>
+                                @if (book.Discount > 0)
+                                {
+                                    <span class="badge bg-success">-@book.Discount%</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pb-3">
+                            <button class="btn btn-outline-primary w-100 rounded-pill" onclick="addToCart(@book.Id, '@book.Title', @book.Price)">
+                                <i class="fas fa-shopping-cart me-2"></i>В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .hover-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+    
+    .favorite-btn {
+        transition: transform 0.2s;
+    }
+    
+    .favorite-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    .favorite-btn.active i {
+        font-weight: 900;
+    }
+</style>
+
+<script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    function addToCart(bookId, bookTitle, bookPrice) {
+        const existingItem = cart.find(item => item.id === bookId);
+        
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            cart.push({
+                id: bookId,
+                title: bookTitle,
+                price: bookPrice,
+                quantity: 1
+            });
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        window.cart = cart;
+        
+        showNotification(`"${bookTitle}" добавлена в корзину!`, 'success');
+        if (typeof updateCartCount === 'function') {
+            updateCartCount();
+        }
+    }
+    
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    let favoritesData = JSON.parse(localStorage.getItem('favoritesData')) || [];
+    
+    function toggleFavorite(bookId, button) {
+        const icon = button.querySelector('i');
+        const index = favorites.indexOf(bookId);
+        
+        const card = button.closest('.card');
+        const title = card.querySelector('.card-title').textContent.trim();
+        const author = card.querySelector('.card-text').textContent.trim();
+        const priceElement = card.querySelector('.h5.fw-bold.text-danger');
+        const priceText = priceElement ? priceElement.textContent.trim() : '0';
+        const price = parseInt(priceText.replace(/\D/g, '')) || 0;
+        const imageUrl = card.querySelector('img').src;
+        
+        if (index > -1) {
+            favorites.splice(index, 1);
+            favoritesData = favoritesData.filter(book => book.id !== bookId);
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+            button.classList.remove('active');
+            showNotification('Удалено из избранного', 'info');
+        } else {
+            favorites.push(bookId);
+            favoritesData.push({
+                id: bookId,
+                title: title,
+                author: author,
+                price: price,
+                imageUrl: imageUrl
+            });
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+            button.classList.add('active');
+            showNotification('Добавлено в избранное!', 'success');
+        }
+        
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        localStorage.setItem('favoritesData', JSON.stringify(favoritesData));
+        window.favorites = favorites;
+        window.favoritesData = favoritesData;
+        
+        if (typeof updateFavoritesCount === 'function') {
+            updateFavoritesCount();
+        }
+    }
+    
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} position-fixed top-0 start-50 translate-middle-x mt-3`;
+        notification.style.zIndex = '9999';
+        notification.style.minWidth = '300px';
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.favorite-btn').forEach(button => {
+            const bookId = parseInt(button.getAttribute('onclick').match(/\d+/)[0]);
+            if (favorites.includes(bookId)) {
+                const icon = button.querySelector('i');
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                button.classList.add('active');
+            }
+        });
+    });
+</script>

@@ -3,18 +3,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace wood.Areas.Identity.Pages;
+namespace wood.Pages;
 
-public class Register : PageModel
+public class RegisterModel : PageModel
 {
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
-    private readonly ILogger<Register> _logger;
+    private readonly ILogger<RegisterModel> _logger;
 
-    public Register(
+    public RegisterModel(
         UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager,
-        ILogger<Register> logger)
+        ILogger<RegisterModel> logger)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -24,43 +24,31 @@ public class Register : PageModel
     [BindProperty]
     public InputModel Input { get; set; } = new();
 
-    public string ReturnUrl { get; set; } = string.Empty;
-
     public class InputModel
     {
         [Required(ErrorMessage = "Email обязателен")]
         [EmailAddress(ErrorMessage = "Некорректный email адрес")]
-        [Display(Name = "Email")]
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Пароль обязателен")]
         [StringLength(100, MinimumLength = 8, ErrorMessage = "Пароль должен быть минимум 8 символов")]
         [DataType(DataType.Password)]
-        [Display(Name = "Пароль")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$!%*?&])[A-Za-z\d$!%*?&]{8,}$",
-            ErrorMessage = "Пароль должен содержать заглавные, строчные буквы, цифры и спецсимволы")]
         public string Password { get; set; } = string.Empty;
 
-        [Display(Name = "Получать рассылку")]
         public bool EmailConsent { get; set; }
     }
 
-    public void OnGet(string returnUrl = null)
+    public void OnGet()
     {
-        ReturnUrl = returnUrl;
     }
 
-    public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+    public async Task<IActionResult> OnPostAsync()
     {
-
-        returnUrl = Url.Content("~/");
-
         if (ModelState.IsValid)
         {
-
             var user = new IdentityUser 
             { 
-                UserName = Input.Email, 
+                UserName = Input.Email,
                 Email = Input.Email 
             };
 
@@ -68,12 +56,9 @@ public class Register : PageModel
 
             if (result.Succeeded)
             {
-                _logger.LogInformation("Пользователь создал новый аккаунт с паролем.");
-
+                _logger.LogInformation("Пользователь создал новый аккаунт.");
                 await _signInManager.SignInAsync(user, isPersistent: false);
-                
-              
-                return Redirect(returnUrl);
+                return RedirectToPage("/Index");
             }
 
             foreach (var error in result.Errors)

@@ -1,0 +1,259 @@
+@page
+@model wood.Pages.LoginModel
+@{
+    ViewData["Title"] = "Вход";
+}
+
+<div class="container-fluid py-5">
+    <div class="row align-items-center min-vh-100">
+        <div class="col-lg-5 py-5">
+            <div class="login-form mx-auto">
+                <div class="text-center mb-4">
+                    <h1 class="h3 fw-bold">С возвращением!</h1>
+                    <p class="text-muted">
+                        Нет аккаунта? 
+                        <a asp-page="/Register" class="text-decoration-none fw-bold text-primary">Зарегистрироваться</a>
+                    </p>
+                </div>
+                
+                <form method="post">
+                    <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Input.Email" class="form-label fw-medium">Электронная почта</label>
+                        <input asp-for="Input.Email" class="form-control form-control-lg rounded-3" 
+                               placeholder="your@email.com" autocomplete="email">
+                        <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Input.Password" class="form-label fw-medium">Пароль</label>
+                        <div class="position-relative">
+                            <input asp-for="Input.Password" class="form-control form-control-lg rounded-3" 
+                                   id="password" type="password"
+                                   placeholder="Введите пароль" autocomplete="current-password">
+                            <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-decoration-none" 
+                                    onclick="togglePassword()" style="z-index: 5;">
+                                <i class="fas fa-eye" id="toggleIcon"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                        <div class="form-check">
+                            <input asp-for="Input.RememberMe" class="form-check-input" type="checkbox">
+                            <label asp-for="Input.RememberMe" class="form-check-label">
+                                Запомнить меня
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 btn-lg rounded-3 fw-bold py-3 mb-3">
+                        Войти
+                    </button>
+                    
+                    <div class="text-center">
+                        <p class="text-muted small mb-0">
+                            Нет аккаунта? 
+                            <a asp-page="/Register" class="text-decoration-none fw-bold">Создать аккаунт</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Правая часть - анимированные цитаты -->
+        <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center quotes-section">
+            <div class="quotes-container">
+                <div class="quote-item">
+                    <i class="fas fa-quote-left quote-icon"></i>
+                    <p class="quote-text">"Книги — это зеркала: в них отражается только то, что у тебя в душе."</p>
+                    <p class="quote-author">— Карлос Руис Сафон</p>
+                </div>
+                <div class="quote-item">
+                    <i class="fas fa-quote-left quote-icon"></i>
+                    <p class="quote-text">"Чтение — вот лучшее учение. Следовать за мыслями великого человека — есть наука самая занимательная."</p>
+                    <p class="quote-author">— А.С. Пушкин</p>
+                </div>
+                <div class="quote-item">
+                    <i class="fas fa-quote-left quote-icon"></i>
+                    <p class="quote-text">"Книга — это волшебница. Книга преобразила мир. В ней память человеческого рода."</p>
+                    <p class="quote-author">— Н.А. Морозов</p>
+                </div>
+                <div class="quote-item">
+                    <i class="fas fa-quote-left quote-icon"></i>
+                    <p class="quote-text">"Хорошая книга — точно беседа с умным человеком."</p>
+                    <p class="quote-author">— Л.Н. Толстой</p>
+                </div>
+                <div class="quote-item">
+                    <i class="fas fa-quote-left quote-icon"></i>
+                    <p class="quote-text">"Читать — это еще ничего не значит; что читать и как понимать читаемое — вот в чем главное дело."</p>
+                    <p class="quote-author">— К.Д. Ушинский</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .login-form {
+        max-width: 600px;
+        background: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,.1);
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .login-form:hover {
+        box-shadow: 0px 0px 29px -16px  rgba(0,0,0,.40);
+    }
+    
+    .quotes-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 90vh;
+        -webkit-box-shadow: 0px 0px 24px 25px rgba(0, 0, 0, 0.2) inset;
+        -moz-box-shadow: 0px 0px 24px 25px rgba(0, 0, 0, 0.2) inset;
+        box-shadow: 0px 0px 24px 25px rgba(0, 0, 0, 0.2) inset;
+        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .quotes-container {
+        position: relative;
+        height: 500px;
+        width: 100%;
+        max-width: 600px;
+        overflow: hidden;
+    }
+    
+    .quote-item {
+        position: absolute;
+        width: 100%;
+        padding: 3rem;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        animation: slideUp 25s linear infinite;
+        opacity: 0;
+    }
+    
+    .quote-item:nth-child(1) {
+        animation-delay: 0s;
+    }
+    
+    .quote-item:nth-child(2) {
+        animation-delay: 5s;
+    }
+    
+    .quote-item:nth-child(3) {
+        animation-delay: 10s;
+    }
+    
+    .quote-item:nth-child(4) {
+        animation-delay: 15s;
+    }
+    
+    .quote-item:nth-child(5) {
+        animation-delay: 20s;
+    }
+    
+    .quote-icon {
+        font-size: 3rem;
+        color: #667eea;
+        opacity: 0.3;
+        margin-bottom: 1rem;
+    }
+    
+    .quote-text {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+    
+    .quote-author {
+        font-size: 1.1rem;
+        color: #666;
+        font-style: italic;
+        text-align: right;
+        margin: 0;
+    }
+    
+    @@keyframes slideUp {
+        0% {
+            bottom: -100%;
+            opacity: 0;
+        }
+        4% {
+            bottom: 50%;
+            transform: translateY(50%);
+            opacity: 1;
+        }
+        20% {
+            bottom: 50%;
+            transform: translateY(50%);
+            opacity: 1;
+        }
+        24% {
+            bottom: 150%;
+            opacity: 0;
+        }
+        100% {
+            bottom: 150%;
+            opacity: 0;
+        }
+    }
+    
+    .form-control:focus {
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+        border-color: #667eea;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+    }
+    
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+    
+    .text-primary {
+        color: #667eea !important;
+    }
+    
+    @@media (max-width: 991px) {
+        .login-form {
+            padding: 2rem;
+        }
+    }
+</style>
+
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('toggleIcon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.className = 'fas fa-eye-slash';
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.className = 'fas fa-eye';
+        }
+    }
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

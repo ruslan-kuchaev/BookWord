@@ -1,7 +1,7 @@
 @page
-@model wood.Areas.Identity.Pages.Register
+@model wood.Areas.Identity.Pages.Login
 @{
-    ViewData["Title"] = "Регистрация";
+    ViewData["Title"] = "Вход";
     Layout = "/Pages/Shared/_Layout.cshtml";
 }
 
@@ -10,7 +10,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="text-center mb-4">Регистрация</h2>
+                    <h2 class="text-center mb-4">Вход</h2>
                     
                     <form method="post">
                         <div asp-validation-summary="All" class="text-danger mb-3"></div>
@@ -25,23 +25,22 @@
                             <label asp-for="Input.Password" class="form-label">Пароль</label>
                             <input asp-for="Input.Password" class="form-control" type="password" />
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
-                            <small class="text-muted">Минимум 8 символов, заглавные и строчные буквы, цифры и спецсимволы</small>
                         </div>
                         
                         <div class="mb-3">
                             <div class="form-check">
-                                <input asp-for="Input.EmailConsent" class="form-check-input" />
-                                <label asp-for="Input.EmailConsent" class="form-check-label">
-                                    Получать рассылку
+                                <input asp-for="Input.RememberMe" class="form-check-input" />
+                                <label asp-for="Input.RememberMe" class="form-check-label">
+                                    Запомнить меня
                                 </label>
                             </div>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
+                        <button type="submit" class="btn btn-primary w-100">Войти</button>
                     </form>
                     
                     <div class="text-center mt-3">
-                        <a asp-page="./Login">Уже есть аккаунт? Войти</a>
+                        <a asp-page="./Register">Нет аккаунта? Зарегистрироваться</a>
                     </div>
                 </div>
             </div>
