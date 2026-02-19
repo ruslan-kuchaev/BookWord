@@ -18,6 +18,14 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
 
+    public static void Initialize(ApplicationDbContext context)
+    {
+        if (context.Users.Any())
+        {
+            return;
+        }
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder); // Важно для Identity!

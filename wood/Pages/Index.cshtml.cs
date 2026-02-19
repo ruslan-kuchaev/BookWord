@@ -18,7 +18,6 @@ public class IndexModel : PageModel
 
     public void OnGet()
     {
-        // Фейковые данные - Новинки
         NewBooks = new List<BookViewModel>
         {
             new() { Id = 1, Title = "Мастер и Маргарита", Author = "Михаил Булгаков", Price = 899, OldPrice = 1200, Discount = 25, ImageUrl = "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop", IsNew = true },
@@ -28,8 +27,7 @@ public class IndexModel : PageModel
             new() { Id = 5, Title = "Анна Каренина", Author = "Лев Толстой", Price = 950, OldPrice = null, Discount = 0, ImageUrl = "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=300&h=400&fit=crop", IsNew = true },
             new() { Id = 6, Title = "Идиот", Author = "Федор Достоевский", Price = 890, OldPrice = 1100, Discount = 19, ImageUrl = "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=400&fit=crop", IsNew = true }
         };
-
-        // Бестселлеры
+        
         BestSellers = new List<BookViewModel>
         {
             new() { Id = 7, Title = "Гарри Поттер и философский камень", Author = "Дж.К. Роулинг", Price = 1200, OldPrice = null, Discount = 0, ImageUrl = "https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=300&h=400&fit=crop", IsBestseller = true },

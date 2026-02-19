@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace wood.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -251,8 +251,8 @@ namespace wood.Migrations
                     id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     User_id = table.Column<string>(type: "TEXT", nullable: false),
-                    Order_Date = table.Column<string>(type: "TEXT", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    Order_total_amount = table.Column<double>(type: "REAL", nullable: false),
+                    Order_Date = table.Column<DateTime>(type: "TEXT", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    Order_total_amount = table.Column<decimal>(type: "TEXT", nullable: false),
                     Order_status = table.Column<string>(type: "TEXT", nullable: false, defaultValue: "New"),
                     ShippingAddress = table.Column<string>(type: "TEXT", nullable: true),
                     PhoneNumber = table.Column<string>(type: "TEXT", nullable: true)

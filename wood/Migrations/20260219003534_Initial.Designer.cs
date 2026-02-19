@@ -11,8 +11,8 @@ using wood.Data;
 namespace wood.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260217175034_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260219003534_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -511,8 +511,7 @@ namespace wood.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
-                    b.Property<string>("OrderDate")
-                        .IsRequired()
+                    b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("Order_Date")
@@ -525,8 +524,8 @@ namespace wood.Migrations
                         .HasDefaultValue("New")
                         .HasColumnName("Order_status");
 
-                    b.Property<double>("OrderTotalAmount")
-                        .HasColumnType("REAL")
+                    b.Property<decimal>("OrderTotalAmount")
+                        .HasColumnType("TEXT")
                         .HasColumnName("Order_total_amount");
 
                     b.Property<string>("PhoneNumber")

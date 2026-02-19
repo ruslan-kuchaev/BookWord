@@ -16,18 +16,15 @@
                     </p>
                 </div>
                 
-                <form method="post">
-                    <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
-                    
+                <form method="post" asp-validation-summary="ALL">
                     <div class="mb-3">
                         <label asp-for="Input.Email" class="form-label fw-medium">Электронная почта</label>
                         <input asp-for="Input.Email" class="form-control form-control-lg rounded-3" 
                                placeholder="your@email.com" autocomplete="email">
-                        <span asp-validation-for="Input.Email" class="text-danger small"></span>
                     </div>
                     
                     <div class="mb-3">
-                        <label asp-for="Input.Password" class="form-label fw-medium">Пароль</label>
+                        <label asp-for="Input.Password" class="form-label fw-medium"  data-valmsg-summary="true">Пароль</label>
                         <div class="position-relative">
                             <input asp-for="Input.Password" class="form-control form-control-lg rounded-3" 
                                    id="password" type="password"
@@ -37,7 +34,6 @@
                                 <i class="fas fa-eye" id="toggleIcon"></i>
                             </button>
                         </div>
-                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
                     </div>
                     
                     <div class="mb-3 d-flex justify-content-between align-items-center">
@@ -49,9 +45,14 @@
                         </div>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary w-100 btn-lg rounded-3 fw-bold py-3 mb-3">
+                    <button type="submit" onclick="showErrorMessage()"  class="btn btn-primary w-100 btn-lg rounded-3 fw-bold py-3 mb-3">
                         Войти
                     </button>
+                    
+                    <div class="d-flex justify-content-around">
+                        <span asp-validation-for="Input.Email" id="ErrorOfEmail" class="text-danger small" ></span>
+                        <span asp-validation-for="Input.Password" id="ErrorOfPassword" class=" text-danger small mt-1" ></span>
+                    </div>
                     
                     <div class="text-center">
                         <p class="text-muted small mb-0">
@@ -59,6 +60,8 @@
                             <a asp-page="/Register" class="text-decoration-none fw-bold">Создать аккаунт</a>
                         </p>
                     </div>
+                    
+                    
                 </form>
             </div>
         </div>
@@ -240,6 +243,17 @@
 </style>
 
 <script>
+    
+    const showErrorMessage = () => {
+        setTimeout(() => {
+            const ErrorOfPassword = document.getElementById('ErrorOfPassword');
+            const ErrorOfEmail = document.getElementById('ErrorOfEmail');
+            ErrorOfPassword.classList.add("alert", "alert-danger");
+            ErrorOfEmail.classList.add("alert", "alert-danger");
+        }, 0)
+    }
+
+
     function togglePassword() {
         const passwordInput = document.getElementById('password');
         const toggleIcon = document.getElementById('toggleIcon');
@@ -253,7 +267,9 @@
         }
     }
 </script>
-
+<script src="lib/jquery/dist/jquery.min.js"></script>
+<script src="lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

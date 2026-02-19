@@ -18,10 +18,10 @@ public partial class Order
     public string UserId { get; set; } = null!;
 
     [Column("Order_Date")]
-    public string OrderDate { get; set; } = null!;
+    public DateTime OrderDate { get; set; } = DateTime.Today;
 
     [Column("Order_total_amount")]
-    public double OrderTotalAmount { get; set; }
+    public decimal OrderTotalAmount { get; set; }
 
     [Column("Order_status")]
     public string OrderStatus { get; set; } = null!;
@@ -36,4 +36,5 @@ public partial class Order
     [ForeignKey("UserId")]
     [InverseProperty("Orders")]
     public virtual AspNetUser User { get; set; } = null!;
+    
 }

@@ -17,13 +17,12 @@
                 </div>
                 
                 <form method="post">
-                    <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
                     
                     <div class="mb-3">
                         <label asp-for="Input.Email" class="form-label fw-medium">Электронная почта</label>
                         <input asp-for="Input.Email" class="form-control form-control-lg rounded-3" 
                                placeholder="your@email.com" autocomplete="email">
-                        <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                        <span asp-validation-for="Input.Email" class="text-danger small alert alert-danger"></span>
                     </div>
                     
                     <div class="mb-3">

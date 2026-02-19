@@ -1,0 +1,651 @@
+@page
+@model wood.Pages.Admin.Index
+@{
+ViewData["Title"] = "Админ-панель - Мир слов";
+Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --primary-color: #8B5A2B;
+            --secondary-color: #D4A574;
+            --dark-bg: #1a1a1a;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f5f5f5;
+            overflow-x: hidden;
+        }
+
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .sidebar-header small {
+            color: #D4A574;
+            font-size: 0.85rem;
+        }
+        
+
+        .sidebar-menu :hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .sidebar-menu .active {
+            background: rgba(212, 165, 116, 0.2);
+            color: white;
+            border-left-color: #D4A574;
+        }
+
+        .sidebar-menu  i {
+            width: 24px;
+            font-size: 1.2rem;
+            margin-right: 12px;
+        }
+
+        .sidebar-menu  {
+            margin-left: auto;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background-color: #f5f5f5;
+            transition: margin-left 0.3s ease;
+            width: 100%;
+        }
+
+        .main-content {
+            margin-left: 0;
+        }
+
+        .top-bar {
+            background: white;
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0;
+            color: #333;
+        }
+
+        .breadcrumb {
+            margin: 0;
+            background: transparent;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #8B5A2B, #D4A574);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            color: #333;
+        }
+
+        .stat-info p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .stat-icon.books { background: rgba(139, 90, 43, 0.1); color: #8B5A2B; }
+        .stat-icon.users { background: rgba(40, 167, 69, 0.1); color: #28a745; }
+        .stat-icon.orders { background: rgba(0, 123, 255, 0.1); color: #007bff; }
+        .stat-icon.revenue { background: rgba(255, 193, 7, 0.1); color: #ffc107; }
+
+        .charts-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .chart-card h4 {
+            margin: 0 0 1rem 0;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .recent-orders {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h4 {
+            margin: 0;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .table {
+            margin: 0;
+        }
+
+        .table th {
+            border-top: none;
+            color: #6c757d;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .badge-status {
+            padding: 0.4rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge-status.completed { background: #d4edda; color: #155724; }
+        .badge-status.pending { background: #fff3cd; color: #856404; }
+        .badge-status.cancelled { background: #f8d7da; color: #721c24; }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            transition: all 0.3s;
+            margin: 0 2px;
+        }
+
+        .action-btn:hover {
+            background: #e9ecef;
+            color: #8B5A2B;
+        }
+
+        .edit-book-btn {
+            background: rgba(139, 90, 43, 0.1);
+            color: #8B5A2B;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .edit-book-btn:hover {
+            background: #8B5A2B;
+            color: white;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: #333;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: none;
+        }
+
+        /* Адаптивность */
+        @@media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @@media (max-width: 992px) {
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            .chart-card{
+                width: 798px;
+                
+            }
+            .sidebar {
+                transform: translateX(-100%);
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .top-bar {
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .user-info {
+                justify-content: space-between;
+            }
+
+            .page-title h1 {
+                font-size: 1.5rem;
+            }
+
+            .table {
+                font-size: 0.85rem;
+            }
+
+            .action-btn {
+                width: 28px;
+                height: 28px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .section-header a {
+                width: 100%;
+            }
+
+            .btn-sm {
+                width: 100%;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-info h3 {
+                font-size: 1.5rem;
+            }
+
+            .stat-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.5rem;
+            }
+
+            .chart-card {
+                padding: 1rem;
+            }
+
+            .recent-orders {
+                padding: 1rem;
+            }
+
+            .table td, .table th {
+                padding: 0.5rem;
+            }
+
+            .badge-status {
+                padding: 0.2rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        .btn-primary {
+            background-color: #8B5A2B;
+            border-color: #8B5A2B;
+        }
+        .btn-primary:hover {
+            background-color: #6B3F1F;
+            border-color: #6B3F1F;
+        }
+        
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        @@media (max-width: 768px) {
+            .sidebar-overlay.show {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-wrapper">
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <main class="main-content" id="mainContent">
+        <div class="top-bar">
+            <div class="d-flex align-items-center">
+                <button class="menu-toggle me-3" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="page-title">
+                    <h1>Дашборд</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Главная</a></li>
+                            <li class="breadcrumb-item active">Дашборд</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="user-info">
+                <div class="text-end">
+                    <div class="fw-bold">@Model.CurrentUser.UserName</div>
+                    <small class="text-muted">@Model.CurrentUser.Email</small>
+                </div>
+                <div class="user-avatar">
+                    <span>@Model.CurrentUser.UserName.Substring(0,1).ToUpper()</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-4 d-flex justify-content-end">
+            <a href="/Admin/Books/Edit" class="edit-book-btn">
+                <i class="fas fa-edit"></i>
+                Редактировать книгу
+            </a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>@Model.TotalBooksCount.ToString("N0")</h3>
+                    <p>Всего книг</p>
+                </div>
+                <div class="stat-icon books">
+                    <i class="fas fa-book"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>@Model.TotalUsersCount.ToString("N0")</h3>
+                    <p>Пользователей</p>
+                </div>
+                <div class="stat-icon users">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>@Model.TodayOrdersCount.ToString("N0")</h3>
+                    <p>Заказов сегодня</p>
+                </div>
+                <div class="stat-icon orders">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>@Model.TodayRevenue.ToString("N0") ₽</h3>
+                    <p>Выручка сегодня</p>
+                </div>
+                <div class="stat-icon revenue">
+                    <i class="fas fa-ruble-sign"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-row">
+            <div class="chart-card">
+                <h4>Продажи за неделю</h4>
+                <canvas id="salesChart" style="height: 300px; width: 100%;"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h4>Популярные категории</h4>
+                <canvas id="categoriesChart" style="height: 300px; width: 100%;"></canvas>
+            </div>
+        </div>
+
+        <div class="recent-orders">
+            <div class="section-header">
+                <h4>Последние заказы</h4>
+                <a href="/Admin/Orders" class="btn btn-primary btn-sm">Все заказы <i class="fas fa-arrow-right ms-2"></i></a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>№ заказа</th>
+                        <th>Покупатель</th>
+                        <th>Сумма</th>
+                        <th>Статус</th>
+                        <th>Дата</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var order in Model.RecentOrders)
+                    {
+                    <tr>
+                        <td><span class="fw-bold">#@order.Id</span></td>
+                        <td>@order.CustomerName</td>
+                        <td>@order.TotalAmount.ToString("N0") ₽</td>
+                        <td>
+                            @switch (order.Status)
+                            {
+                            case "Completed":
+                            <span class="badge-status completed">Выполнен</span>
+                            break;
+                            case "Pending":
+                            <span class="badge-status pending">В обработке</span>
+                            break;
+                            case "Cancelled":
+                            <span class="badge-status cancelled">Отменен</span>
+                            break;
+                            default:
+                            <span class="badge-status">@order.Status</span>
+                            break;
+                            }
+                        </td>
+                        <td>@order.OrderDate.ToString("dd.MM.yyyy")</td>
+                        <td>
+                            <a href="/Admin/Orders/Details/@order.Id" class="action-btn" title="Просмотр"><i class="fas fa-eye"></i></a>
+                            <a href="/Admin/Orders/Edit/@order.Id" class="action-btn" title="Редактировать"><i class="fas fa-edit"></i></a>
+                        </td>
+                    </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('show');
+        overlay.classList.toggle('show');
+
+        if (window.innerWidth <= 768) {
+            document.body.style.overflow = sidebar.classList.contains('show') ? 'hidden' : '';
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+                datasets: [{
+                    label: 'Продажи (₽)',
+                    data: [@Model.SalesData.Monday, @Model.SalesData.Tuesday, @Model.SalesData.Wednesday, @Model.SalesData.Thursday, @Model.SalesData.Friday, @Model.SalesData.Saturday, @Model.SalesData.Sunday],
+                    borderColor: '#8B5A2B',
+                    backgroundColor: 'rgba(139, 90, 43, 0.1)',
+                    fill: true
+                }]
+            },
+        });
+
+        function handleResize() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+        
+        const categoriesCtx = document.getElementById('categoriesChart').getContext('2d');
+        new Chart(categoriesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [@Html.Raw(Model.CategoryLabels)],
+                datasets: [{
+                    data: [@Model.CategoryData],
+                    backgroundColor: [
+                        '#8B5A2B',
+                        '#D4A574',
+                        '#2E7D32',
+                        '#1976D2',
+                        '#9C27B0'
+                    ]
+                }]
+            },
+        });
+    });
+</script>
+</body>
+</html>

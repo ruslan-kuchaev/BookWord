@@ -508,8 +508,7 @@ namespace wood.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
-                    b.Property<string>("OrderDate")
-                        .IsRequired()
+                    b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("Order_Date")
@@ -522,8 +521,8 @@ namespace wood.Migrations
                         .HasDefaultValue("New")
                         .HasColumnName("Order_status");
 
-                    b.Property<double>("OrderTotalAmount")
-                        .HasColumnType("REAL")
+                    b.Property<decimal>("OrderTotalAmount")
+                        .HasColumnType("TEXT")
                         .HasColumnName("Order_total_amount");
 
                     b.Property<string>("PhoneNumber")
